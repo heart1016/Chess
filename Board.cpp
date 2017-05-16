@@ -92,7 +92,6 @@ void Board::paintEvent(QPaintEvent *)
     painter.drawLine(QPoint(8*d+2, 8*d+2), QPoint(8*d+10, 8*d+2));
     painter.drawLine(QPoint(8*d+2, 8*d+2), QPoint(8*d+2,  8*d+10));
 
-
     //左上卒①
     painter.drawLine(QPoint(d+2, 4*d-2), QPoint(d+10, 4*d-2));
     painter.drawLine(QPoint(d+2, 4*d-2), QPoint(d+2,  4*d-10));

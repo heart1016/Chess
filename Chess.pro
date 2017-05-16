@@ -6,4 +6,5 @@ SOURCES += \
     Board.cpp \
     main.cpp \
     Stone.cpp
+
 QT += widgets gui

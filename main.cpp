@@ -7,6 +7,6 @@ int main(int argc, char *argv[])
 
     Board board;
     board.show();
-
+a
     return app.exec();
 }
