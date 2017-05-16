@@ -7,4 +7,5 @@ SOURCES += \
     main.cpp \
     Stone.cpp
 
-QT += widgets gui
+QT += widgets gui sql
+

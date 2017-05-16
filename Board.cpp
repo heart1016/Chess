@@ -2,14 +2,16 @@
 #include <QPainter>
 Board::Board(QWidget *parent) : QWidget(parent)
 {
-
+    for (int i = 0; i<32; i++) {
+        _s[i].init(i);
+    }
 }
 
 void Board::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     int d = 40;
-
+    _r = d/2;
     //画竖线
     for (int i = 1; i<=9; i++) {
         if (i == 1 || i == 9) {
@@ -175,4 +177,36 @@ void Board::paintEvent(QPaintEvent *)
     painter.drawLine(QPoint(9*d-2, 7*d-2), QPoint(9*d-2,  7*d-10));
     painter.drawLine(QPoint(9*d-2, 7*d+2), QPoint(9*d-10, 7*d+2));
     painter.drawLine(QPoint(9*d-2, 7*d+2), QPoint(9*d-2,  7*d+10));
+
+    //绘制棋子
+    for (int i = 0; i<32; i++) {
+        drawStone(painter, i);
+    }
+}
+
+QPoint Board::center(int row, int col)
+{
+    QPoint ret;
+
+    ret.rx() = (col+1) * _r * 2;
+    ret.ry() = (row+1) * _r * 2;
+    return ret;
+}
+
+QPoint Board::center(int id) {
+    return center(_s[id]._row, _s[id]._col);
+}
+
+void Board::drawStone(QPainter &painter, int id)
+{
+    QPoint c = center(id);
+    QRect rect = QRect(c.x()-_r, c.y()-_r, _r*2, _r*2);
+    painter.setBrush(QBrush(QColor(255,255,0)));
+    painter.setPen(Qt::black);
+    painter.drawEllipse(center(id), _r, _r);
+    if (_s[id]._red) {
+        painter.setPen(Qt::red);
+    }
+    painter.setFont(QFont("system", _r, 700));
+    painter.drawText(rect, _s[id].getText(), QTextOption(Qt::AlignCenter));
 }
