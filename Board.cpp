@@ -1,10 +1,12 @@
 #include "Board.h"
 #include <QPainter>
+#include <QMouseEvent>
 Board::Board(QWidget *parent) : QWidget(parent)
 {
     for (int i = 0; i<32; i++) {
         _s[i].init(i);
     }
+    _selectid = -1;
 }
 
 void Board::paintEvent(QPaintEvent *)
@@ -184,6 +186,7 @@ void Board::paintEvent(QPaintEvent *)
     }
 }
 
+
 QPoint Board::center(int row, int col)
 {
     QPoint ret;
@@ -197,11 +200,20 @@ QPoint Board::center(int id) {
     return center(_s[id]._row, _s[id]._col);
 }
 
+
 void Board::drawStone(QPainter &painter, int id)
 {
+    if (_s[id]._dead) {
+        return;
+    }
     QPoint c = center(id);
     QRect rect = QRect(c.x()-_r, c.y()-_r, _r*2, _r*2);
-    painter.setBrush(QBrush(QColor(255,255,0)));
+
+    if (id == _selectid) {
+        painter.setBrush(QBrush(Qt::gray));
+    } else {
+        painter.setBrush(QBrush(Qt::yellow));
+    }
     painter.setPen(Qt::black);
     painter.drawEllipse(center(id), _r, _r);
     if (_s[id]._red) {
@@ -209,4 +221,57 @@ void Board::drawStone(QPainter &painter, int id)
     }
     painter.setFont(QFont("system", _r, 700));
     painter.drawText(rect, _s[id].getText(), QTextOption(Qt::AlignCenter));
+}
+
+bool Board::getRowCol(QPoint pt, int &row, int &col)
+{
+    for (row = 0; row<=9; row++) {
+        for (col = 0; col <= 8; col++) {
+            QPoint c = center(row, col);
+            int dx = c.x() - pt.x();
+            int dy = c.y() - pt.y();
+            int dist = dx*dx + dy*dy;
+            if (dist < _r*_r) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void Board::mouseReleaseEvent(QMouseEvent *ev)
+{
+    QPoint pt = ev->pos();
+    int row, col;
+    bool bRet = getRowCol(pt, row, col);
+    if (bRet ==  false) {
+        return;
+    }
+
+    int i;
+    int clickid = -1;
+    for (i = 0; i<32; i++) {
+        if (_s[i]._row == row && _s[i]._col == col && _s[i]._dead == false) {
+            break;
+        }
+    }
+
+    if (i < 32) {
+        clickid = i;
+    }
+
+
+    if (_selectid == -1) {
+        if (clickid != -1) {
+            _selectid = clickid;
+            update();
+        }
+    } else {
+        _s[_selectid]._row = row;
+        _s[_selectid]._col = col;
+        if (clickid != -1) {
+            _s[clickid]._dead = true;
+        }
+        _selectid = -1;
+        update();
+    }
 }
