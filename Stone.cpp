@@ -4,3 +4,8 @@ Stone::Stone()
 {
 
 }
+
+Stone::~Stone()
+{
+
+}

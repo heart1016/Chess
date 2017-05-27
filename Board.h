@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "Stone.h"
+
 class Board : public QWidget
 {
     Q_OBJECT
