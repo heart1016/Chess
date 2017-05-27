@@ -7,6 +7,7 @@ class Stone
 {
 public:
     Stone();
+    ~Stone();
 
     enum TYPE {JIANG, JU, PAO, MA, ZU, SHI, XIANG};
 
