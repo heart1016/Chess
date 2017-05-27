@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <QPainter>
 #include <QMouseEvent>
+
 Board::Board(QWidget *parent) : QWidget(parent)
 {
     for (int i = 0; i<32; i++) {
@@ -186,7 +187,6 @@ void Board::paintEvent(QPaintEvent *)
     }
 }
 
-
 QPoint Board::center(int row, int col)
 {
     QPoint ret;
@@ -199,7 +199,6 @@ QPoint Board::center(int row, int col)
 QPoint Board::center(int id) {
     return center(_s[id]._row, _s[id]._col);
 }
-
 
 void Board::drawStone(QPainter &painter, int id)
 {
@@ -238,6 +237,7 @@ bool Board::getRowCol(QPoint pt, int &row, int &col)
     }
     return false;
 }
+
 void Board::mouseReleaseEvent(QMouseEvent *ev)
 {
     QPoint pt = ev->pos();
