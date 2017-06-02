@@ -6,14 +6,11 @@ NetGame::NetGame(bool server, QWidget *parent) : Board(parent)
     _socket = NULL;
     _bServer = server;
 
-    if(_bServer)
-    {
+    if(_bServer) {
         _server = new QTcpServer(this);
         _server->listen(QHostAddress::Any, 9899);
         connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    }
-    else
-    {
+    } else {
         _socket = new QTcpSocket(this);
         _socket->connectToHost(QHostAddress("127.0.0.1"), 9899);
         connect(_socket, SIGNAL(readyRead()), this, SLOT(slotDataArrive()));
@@ -22,7 +19,9 @@ NetGame::NetGame(bool server, QWidget *parent) : Board(parent)
 
 void NetGame::slotNewConnection()
 {
-    if(_socket) return;
+    if(_socket) {
+        return;
+    }
 
     _socket = _server->nextPendingConnection();
     connect(_socket, SIGNAL(readyRead()), this, SLOT(slotDataArrive()));
@@ -40,8 +39,9 @@ void NetGame::slotNewConnection()
 
 void NetGame::back()
 {
-    if(_bRedTurn != _bSide)
+    if(_bRedTurn != _bSide) {
         return;
+    }
     backOne();
     backOne();
 
@@ -52,8 +52,9 @@ void NetGame::back()
 
 void NetGame::click(int id, int row, int col)
 {
-    if(_bRedTurn != _bSide)
+    if(_bRedTurn != _bSide) {
         return;
+    }
 
     Board::click(id, row, col);
 

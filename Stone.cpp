@@ -13,8 +13,7 @@ Stone::~Stone()
 
 QString Stone::name()
 {
-    switch(this->_type)
-    {
+    switch(this->_type) {
     case R_CAR:
         return "车";
     case B_CAR:
@@ -87,14 +86,11 @@ void Stone::init(int id)
     {6, 8, R_PAWN},
 };
 
-    if(id < 32)
-    {
+    if(id < 32) {
         this->_col = pos[id].col;
         this->_row = pos[id].row;
         this->_type = pos[id].type;
-    }
-    else
-    {
+    } else {
         this->_col = 8-pos[id-32].col;
         this->_row = 9-pos[id-32].row;
         this->_type = pos[id-32].type;

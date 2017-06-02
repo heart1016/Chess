@@ -21,14 +21,11 @@ Board::~Board()
 
 void Board::init(bool bRedSide)
 {
-    for(int i=0; i<32; ++i)
-    {
+    for(int i=0; i<32; ++i) {
         _s[i].init(i);
     }
-    if(bRedSide)
-    {
-        for(int i=0; i<32; ++i)
-        {
+    if(bRedSide) {
+        for(int i=0; i<32; ++i) {
             _s[i].rotate();
         }
     }
@@ -67,30 +64,39 @@ void Board::paintEvent(QPaintEvent *)
 
 void Board::drawStone(QPainter &p)
 {
-    for(int i=0; i<32; i++)
-    {
+    for(int i=0; i<32; i++) {
         drawStone(p, i);
     }
 }
 
 bool Board::isDead(int id)
 {
-    if(id == -1)return true;
+    if(id == -1) {
+        return true;
+    }
     return _s[id]._dead;
 }
 
 void Board::drawStone(QPainter &p, int id)
 {
-    if(isDead(id)) return;
+    if(isDead(id)) {
+        return;
+    }
 
     QColor color;
-    if(red(id)) color = Qt::red;
-    else color = Qt::black;
+    if(red(id)) {
+        color = Qt::red;
+    } else {
+        color = Qt::black;
+    }
 
     p.setPen(QPen(QBrush(color), 2));
 
-    if(id == _selectid) p.setBrush(Qt::gray);
-    else p.setBrush(Qt::yellow);
+    if(id == _selectid) {
+        p.setBrush(Qt::gray);
+    } else {
+        p.setBrush(Qt::yellow);
+    }
 
     p.drawEllipse(cell(id));
 
@@ -117,8 +123,7 @@ void Board::drawInitPosition(QPainter &p, int row, int col)
     QPoint ptStart;
     QPoint ptEnd;
 
-    if(col != 0)
-    {
+    if(col != 0) {
         /* 左上角 */
         ptStart = QPoint(pt.x() - off.x(), pt.y() - off.y());
         ptEnd = ptStart + QPoint(-len, 0);
@@ -134,8 +139,7 @@ void Board::drawInitPosition(QPainter &p, int row, int col)
         p.drawLine(ptStart, ptEnd);
     }
 
-    if(col != 8)
-    {
+    if(col != 8) {
         /* 右下角 */
         ptStart = QPoint(pt.x() + off.x(), pt.y() + off.y());
         ptEnd = ptStart + QPoint(+len, 0);
@@ -184,28 +188,20 @@ void Board::drawPlace(QPainter &p)
 
 void Board::drawPlate(QPainter &p)
 {
-    for(int i=0; i<10; ++i)
-    {
-        if(i==0 || i==9)
-        {
+    for(int i=0; i<10; ++i) {
+        if(i==0 || i==9) {
             p.setPen(QPen(Qt::black, 3, Qt::SolidLine));
-        }
-        else
-        {
+        } else {
             p.setPen(QPen(Qt::black, 1, Qt::SolidLine));
         }
         p.drawLine(center(i, 0), center(i, 8));
     }
 
-    for(int i=0; i<9; ++i)
-    {
-        if(i==0 || i==8)
-        {
+    for(int i=0; i<9; ++i) {
+        if(i==0 || i==8) {
             p.setPen(QPen(Qt::black, 3, Qt::SolidLine));
             p.drawLine(center(0, i), center(9, i));
-        }
-        else
-        {
+        } else {
             p.setPen(QPen(Qt::black, 1, Qt::SolidLine));
             p.drawLine(center(0, i), center(4, i));
             p.drawLine(center(5, i), center(9, i));
@@ -246,13 +242,12 @@ QRect Board::cell(int id)
 
 bool Board::getClickRowCol(QPoint pt, int &row, int &col)
 {
-    for(row=0; row<=9; ++row)
-    {
-        for(col=0; col<=8; ++col)
-        {
+    for(row=0; row<=9; ++row) {
+        for(col=0; col<=8; ++col) {
             QPoint distance = center(row, col) - pt;
-            if(distance.x() * distance.x() + distance.y() * distance.y() < _r* _r)
+            if(distance.x() * distance.x() + distance.y() * distance.y() < _r* _r) {
                 return true;
+            }
         }
     }
     return false;
@@ -260,8 +255,7 @@ bool Board::getClickRowCol(QPoint pt, int &row, int &col)
 
 void Board::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if(ev->button() != Qt::LeftButton)
-    {
+    if(ev->button() != Qt::LeftButton) {
         return;
     }
 
@@ -275,10 +269,13 @@ bool Board::canSelect(int id)
 
 void Board::trySelectStone(int id)
 {
-    if(id == -1)
+    if(id == -1) {
         return;
+    }
 
-    if(!canSelect(id)) return;
+    if(!canSelect(id)) {
+        return;
+    }
 
     _selectid = id;
     update();
@@ -286,22 +283,22 @@ void Board::trySelectStone(int id)
 
 bool Board::sameColor(int id1, int id2)
 {
-    if(id1 == -1 || id2 == -1) return false;
+    if(id1 == -1 || id2 == -1) {
+        return false;
+    }
 
     return red(id1) == red(id2);
 }
 
 void Board::tryMoveStone(int killid, int row, int col)
 {
-    if(killid != -1 && sameColor(killid, _selectid))
-    {
+    if(killid != -1 && sameColor(killid, _selectid)) {
         trySelectStone(killid);
         return;
     }
 
     bool ret = canMove(_selectid, killid, row, col);
-    if(ret)
-    {
+    if(ret) {
         moveStone(_selectid, killid, row, col);
         _selectid = -1;
         update();
@@ -316,21 +313,16 @@ int Board::getStoneCountAtLine(int row1, int col1, int row2, int col2)
     if(row1 == row2 && col1 == col2)
         return -1;
 
-    if(row1 == row2)
-    {
+    if(row1 == row2) {
         int min = col1 < col2 ? col1 : col2;
         int max = col1 < col2 ? col2 : col1;
-        for(int col = min+1; col<max; ++col)
-        {
+        for(int col = min+1; col<max; ++col) {
             if(getStoneId(row1, col) != -1) ++ret;
         }
-    }
-    else
-    {
+    } else {
         int min = row1 < row2 ? row1 : row2;
         int max = row1 < row2 ? row2 : row1;
-        for(int row = min+1; row<max; ++row)
-        {
+        for(int row = min+1; row<max; ++row) {
             if(getStoneId(row, col1) != -1) ++ret;
         }
     }
@@ -347,8 +339,9 @@ bool Board::canMoveChe(int moveid, int, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int ret = getStoneCountAtLine(row1, col1, row, col);
-    if(ret == 0)
+    if(ret == 0) {
         return true;
+    }
     return false;
 }
 
@@ -356,18 +349,18 @@ bool Board::canMoveMa(int moveid, int, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int r = relation(row1, col1, row, col);
-    if(r != 12 && r != 21)
+    if(r != 12 && r != 21) {
         return false;
-
-    if(r == 12)
-    {
-        if(getStoneId(row1, (col+col1)/2) != -1)
-            return false;
     }
-    else
-    {
-        if(getStoneId((row+row1)/2, col1) != -1)
+
+    if(r == 12) {
+        if(getStoneId(row1, (col+col1)/2) != -1) {
             return false;
+        }
+    } else {
+        if(getStoneId((row+row1)/2, col1) != -1) {
+            return false;
+        }
     }
 
     return true;
@@ -377,13 +370,14 @@ bool Board::canMovePao(int moveid, int killid, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int ret = getStoneCountAtLine(row, col, row1, col1);
-    if(killid != -1)
-    {
-        if(ret == 1) return true;
-    }
-    else
-    {
-        if(ret == 0) return true;
+    if(killid != -1) {
+        if(ret == 1) {
+            return true;
+        }
+    } else {
+        if(ret == 0) {
+            return true;
+        }
     }
     return false;
 }
@@ -392,17 +386,24 @@ bool Board::canMoveBing(int moveid, int, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int r = relation(row1, col1, row, col);
-    if(r != 1 && r != 10) return false;
-
-    if(isBottomSide(moveid))
-    {
-        if(row > row1) return false;
-        if(row1 >= 5 && row == row1) return false;
+    if(r != 1 && r != 10) {
+        return false;
     }
-    else
-    {
-        if(row < row1) return false;
-        if(row1 <= 4 && row == row1) return false;
+
+    if(isBottomSide(moveid)) {
+        if(row > row1) {
+            return false;
+        }
+        if(row1 >= 5 && row == row1) {
+            return false;
+        }
+    } else {
+        if(row < row1) {
+            return false;
+        }
+        if(row1 <= 4 && row == row1) {
+            return false;
+        }
     }
 
     return true;
@@ -410,20 +411,24 @@ bool Board::canMoveBing(int moveid, int, int row, int col)
 
 bool Board::canMoveJiang(int moveid, int killid, int row, int col)
 {
-    if(killid != -1 && (_s[killid]._type == B_KING || _s[killid]._type == R_KING))
+    if(killid != -1 && (_s[killid]._type == B_KING || _s[killid]._type == R_KING)) {
         return canMoveChe(moveid, killid, row, col);
+    }
 
     GetRowCol(row1, col1, moveid);
     int r = relation(row1, col1, row, col);
-    if(r != 1 && r != 10) return false;
-
-    if(col < 3 || col > 5) return false;
-    if(isBottomSide(moveid))
-    {
-        if(row < 7) return false;
+    if(r != 1 && r != 10) {
+        return false;
     }
-    else
-    {
+
+    if(col < 3 || col > 5) {
+        return false;
+    }
+    if(isBottomSide(moveid)) {
+        if(row < 7) {
+            return false;
+        }
+    } else {
         if(row > 2) return false;
     }
     return true;
@@ -433,16 +438,21 @@ bool Board::canMoveShi(int moveid, int, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int r = relation(row1, col1, row, col);
-    if(r != 11) return false;
-
-    if(col < 3 || col > 5) return false;
-    if(isBottomSide(moveid))
-    {
-        if(row < 7) return false;
+    if(r != 11) {
+        return false;
     }
-    else
-    {
-        if(row > 2) return false;
+
+    if(col < 3 || col > 5) {
+        return false;
+    }
+    if(isBottomSide(moveid)) {
+        if(row < 7) {
+            return false;
+        }
+    } else {
+        if(row > 2) {
+            return false;
+        }
     }
     return true;
 }
@@ -451,30 +461,35 @@ bool Board::canMoveXiang(int moveid, int, int row, int col)
 {
     GetRowCol(row1, col1, moveid);
     int r = relation(row1, col1, row, col);
-    if(r != 22) return false;
+    if(r != 22) {
+        return false;
+    }
 
     int rEye = (row+row1)/2;
     int cEye = (col+col1)/2;
-    if(getStoneId(rEye, cEye) != -1)
+    if(getStoneId(rEye, cEye) != -1) {
         return false;
-
-    if(isBottomSide(moveid))
-    {
-        if(row < 4) return false;
     }
-    else
-    {
-        if(row > 5) return false;
+
+    if(isBottomSide(moveid)) {
+        if(row < 4) {
+            return false;
+        }
+    } else {
+        if(row > 5) {
+            return false;
+        }
     }
     return true;
 }
 
 bool Board::canMove(int moveid, int killid, int row, int col)
 {
-    if(sameColor(moveid, killid)) return false;
+    if(sameColor(moveid, killid)) {
+        return false;
+    }
 
-    switch (_s[moveid]._type)
-    {
+    switch (_s[moveid]._type) {
     case B_CAR:
     case R_CAR:
         return canMoveChe(moveid, killid, row, col);
@@ -556,12 +571,9 @@ void Board::moveStone(int moveid, int killid, int row, int col)
 
 void Board::click(int id, int row, int col)
 {
-    if(this->_selectid == -1)
-    {
+    if(this->_selectid == -1) {
         trySelectStone(id);
-    }
-    else
-    {
+    } else {
         tryMoveStone(id, row, col);
     }
 }
@@ -570,7 +582,9 @@ void Board::click(QPoint pt)
 {
     int row, col;
     bool bClicked = getClickRowCol(pt, row, col);
-    if(!bClicked) return;
+    if(!bClicked) {
+        return;
+    }
 
     int id = getStoneId(row, col);
     click(id, row, col);
@@ -578,10 +592,10 @@ void Board::click(QPoint pt)
 
 int Board::getStoneId(int row, int col)
 {
-    for(int i=0; i<32; ++i)
-    {
-        if(_s[i]._row == row && _s[i]._col == col && !isDead(i))
+    for(int i=0; i<32; ++i) {
+        if(_s[i]._row == row && _s[i]._col == col && !isDead(i)) {
             return i;
+        }
     }
     return -1;
 }
@@ -594,7 +608,9 @@ void Board::back(Step *step)
 
 void Board::backOne()
 {
-    if(this->_steps.size() == 0) return;
+    if(this->_steps.size() == 0) {
+        return;
+    }
 
     Step* step = this->_steps.last();
     _steps.removeLast();

@@ -20,7 +20,6 @@ SOURCES += \
     ChooseDlg.cpp \
     SingleGame.cpp \
     MultiGame.cpp \
-    NetGame.cpp \
-    define.h
+    NetGame.cpp
 
 QT += widgets gui network
