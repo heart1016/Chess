@@ -27,7 +27,7 @@ public:
     void init(bool bRedSide);
 
     /* draw functions */
-    //void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *);
     void drawPlate(QPainter& p);
     void drawPlace(QPainter& p);
     void drawInitPosition(QPainter& p);
